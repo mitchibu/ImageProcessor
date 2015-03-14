@@ -11,6 +11,7 @@ public class AsyncImageHelper {
 	private static ImageProcessor<String> processor = null;
 
 	private ImageProcessor<String>.Task task = null;
+	private String uri;
 
 	public AsyncImageHelper(Context context) {
 		if(processor == null) {
@@ -19,17 +20,21 @@ public class AsyncImageHelper {
 		}
 	}
 
-	public void load(String uri, final RecyclingImageView view) {
+	public void load(final String uri, final RecyclingImageView view) {
 		if(uri == null) {
 			view.setImageDrawable(null);
 		} else {
 			task = processor.loadBitmap(uri, new ImageProcessor.OnLoadDoneListener<String>() {
 				@Override
 				public void onLoadDone(String key, RecyclingBitmapDrawable bm) {
-					view.setImageDrawable(bm);
+					if(key.equals(uri)) view.setImageDrawable(bm);
 				}
 			});
 		}
+	}
+
+	public String getUri() {
+		return uri;
 	}
 
 	public void cancel() {

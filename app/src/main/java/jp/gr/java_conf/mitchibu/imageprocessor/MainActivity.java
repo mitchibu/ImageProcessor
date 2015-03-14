@@ -34,11 +34,15 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 			@Override
 			public void bindView(View view, Context context, Cursor cursor) {
 				long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-				Uri uri = ContentUris.withAppendedId(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, id);
+				String uri = ContentUris.withAppendedId(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, id).toString();
 				AsyncImageHelper helper = (AsyncImageHelper)view.getTag();
-				if(helper == null) helper = new AsyncImageHelper(context);
-				else helper.cancel();
-				helper.load(uri.toString(), (RecyclingImageView)view);
+				if(helper == null) {
+					helper = new AsyncImageHelper(context);
+				} else {
+					if(helper.getUri().equals(uri)) return;
+					else helper.cancel();
+				}
+				helper.load(uri, (RecyclingImageView)view);
 			}
 		};
 		GridView list = (GridView)findViewById(android.R.id.list);
