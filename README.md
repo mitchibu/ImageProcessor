@@ -2,7 +2,7 @@
 
 #Gradle
 repositories {
-    mavenRepo urls: 'https://github.com/mitchibu/ImageProcessor/raw/master/'
+    maven { url 'http://raw.github.com/mitchibu/ImageProcessor/master/repository/' }
 }
 
 dependencies {
