@@ -2,12 +2,14 @@ package jp.gr.java_conf.mitchibu.lib.imageprocessor.drawable;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
  
 public class RecyclingBitmapDrawable extends BitmapDrawable {
 	private int cacheRefCount = 0;
 	private int displayRefCount = 0;
 	private boolean hasBeenDisplayed = false;
+	private InvalidBitmapCallback invalidBitmapCallback = null;
 
 	public RecyclingBitmapDrawable(Resources res, Bitmap bitmap) {
 		super(res, bitmap);
@@ -37,6 +39,19 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
 		checkState();
 	}
 
+	public void setInvalidBitmapCallback(InvalidBitmapCallback callback) {
+		invalidBitmapCallback = callback;
+	}
+
+	@Override
+	public void draw(Canvas canvas) {
+		if(hasValidBitmap()) {
+			super.draw(canvas);
+		} else {
+			if(invalidBitmapCallback != null) invalidBitmapCallback.invalidBitmap();
+		}
+	}
+
 	private synchronized void checkState() {
 		if(cacheRefCount <= 0 && displayRefCount <= 0 && hasBeenDisplayed && hasValidBitmap()) {
 			android.util.Log.v("test", "recycle");
@@ -47,5 +62,9 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
 	private synchronized boolean hasValidBitmap() {
 		Bitmap bitmap = getBitmap();
 		return bitmap != null && !bitmap.isRecycled();
+	}
+
+	public interface InvalidBitmapCallback {
+		void invalidBitmap();
 	}
 }

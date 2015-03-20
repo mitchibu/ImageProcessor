@@ -3,6 +3,7 @@ package jp.gr.java_conf.mitchibu.lib.imageprocessor.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -31,15 +32,15 @@ public class RecyclingImageView extends ImageView {
 
 	@Override
 	public void setImageDrawable(Drawable src) {
-		Drawable old = getDrawable();
-		if(old != null && old instanceof RecyclingBitmapDrawable) ((RecyclingBitmapDrawable)old).setIsDisplayed(false);
+		clean();
 		if(src != null && src instanceof RecyclingBitmapDrawable) ((RecyclingBitmapDrawable)src).setIsDisplayed(true);
 		super.setImageDrawable(src);
 	}
 
 	@Override
 	public void setImageBitmap(Bitmap src) {
-		setImageDrawable(new RecyclingBitmapDrawable(getResources(), src));
+		setImageDrawable(null);
+		super.setImageBitmap(src);
 	}
 
 	@Override
@@ -50,7 +51,12 @@ public class RecyclingImageView extends ImageView {
 
 	@Override
 	protected void onDetachedFromWindow() {
-		setImageDrawable(null);
+		clean();
 		super.onDetachedFromWindow();
+	}
+
+	private void clean() {
+		Drawable old = getDrawable();
+		if(old != null && old instanceof RecyclingBitmapDrawable) ((RecyclingBitmapDrawable)old).setIsDisplayed(false);
 	}
 }
