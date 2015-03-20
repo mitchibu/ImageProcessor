@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import jp.gr.java_conf.mitchibu.lib.imageprocessor.drawable.RecyclingBitmapDrawable;
 
 public class RecyclingImageView extends ImageView {
+	private boolean isCleaned = true;
+
 	public RecyclingImageView(Context context) {
 		super(context);
 	}
@@ -33,7 +35,10 @@ public class RecyclingImageView extends ImageView {
 	@Override
 	public void setImageDrawable(Drawable src) {
 		clean();
-		if(src != null && src instanceof RecyclingBitmapDrawable) ((RecyclingBitmapDrawable)src).setIsDisplayed(true);
+		if(src != null && src instanceof RecyclingBitmapDrawable) {
+			((RecyclingBitmapDrawable)src).setIsDisplayed(true);
+			isCleaned = false;
+		}
 		super.setImageDrawable(src);
 	}
 
@@ -56,7 +61,9 @@ public class RecyclingImageView extends ImageView {
 	}
 
 	private void clean() {
+		if(isCleaned) return;
 		Drawable old = getDrawable();
 		if(old != null && old instanceof RecyclingBitmapDrawable) ((RecyclingBitmapDrawable)old).setIsDisplayed(false);
+		isCleaned = true;
 	}
 }
