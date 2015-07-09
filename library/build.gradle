@@ -20,7 +20,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:22.2.0'
 }
 
 def deployTo = new File(rootDir, "repository")
@@ -29,7 +29,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${deployTo.absolutePath}"
-            pom.version = '1.0.2'
+            pom.version = '1.0.3'
             pom.groupId = 'jp.gr.java_conf.mitchibu.lib'
             pom.artifactId = 'imageprocessor'
         }

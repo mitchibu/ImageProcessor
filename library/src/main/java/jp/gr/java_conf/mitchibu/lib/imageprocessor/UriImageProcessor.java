@@ -1,16 +1,16 @@
 package jp.gr.java_conf.mitchibu.lib.imageprocessor;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-
-import jp.gr.java_conf.mitchibu.lib.imageprocessor.drawable.RecyclingBitmapDrawable;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+
+import jp.gr.java_conf.mitchibu.lib.imageprocessor.drawable.RecyclingBitmapDrawable;
 
 public class UriImageProcessor extends ImageProcessor<String> {
 	@SuppressWarnings("serial")
@@ -34,10 +34,23 @@ public class UriImageProcessor extends ImageProcessor<String> {
 			put(ContentResolver.SCHEME_FILE, new ImageDecoder() {
 				@Override
 				public Bitmap decode(Context context, String uri) {
+					try {
+						return BitmapFactory.decodeFile(Uri.parse(uri).getPath());
+					} catch(Exception e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			});
+			put("assets", new ImageDecoder() {
+				@Override
+				public Bitmap decode(Context context, String uri) {
 					InputStream in = null;
 					try {
-						in = new URL(uri).openConnection().getInputStream();
-						return BitmapFactory.decodeFile(Uri.parse(uri).getPath());
+						String path = Uri.parse(uri).getPath();
+						if(path.startsWith("/")) path = path.substring(1);
+						in = context.getAssets().open(path);
+						return BitmapFactory.decodeStream(in);
 					} catch(Exception e) {
 						e.printStackTrace();
 						return null;
