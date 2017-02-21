@@ -73,6 +73,16 @@ public abstract class ImageProcessor<E> {
 	}
 
 	/**
+	 * キャッシュされているかどうかを返す。
+	 *
+	 * @param key 画像のキー
+	 * @return　画像がキャッシュされている場合はtrueを返す。それ以外はfalseを返す。
+	 */
+	public boolean hasCache(E key) {
+		return cache != null && cache.get(key) != null;
+	}
+
+	/**
 	 * 画像をロードする。
 	 *
 	 * @param key 画像のキー
@@ -80,7 +90,7 @@ public abstract class ImageProcessor<E> {
 	 * @return　画像がキャッシュされている場合はnullを返す。それ以外はTaskオブジェクトを返す。
 	 */
 	public Task loadBitmap(E key, OnLoadDoneListener<E> listener) {
-		RecyclingBitmapDrawable bm = cache == null ? null : cache.get(key);
+		RecyclingBitmapDrawable bm = hasCache(key) ? cache.get(key) : null;
 		if(bm == null) {
 			RootTask rootTask = taskMap.get(key);
 			if(rootTask == null) {
