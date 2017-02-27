@@ -20,7 +20,7 @@ public abstract class ImageProcessor<E> {
 	private final Context context;
 	private final BitmapCache<E> cache;
 	private final Map<E, RootTask> taskMap = new HashMap<E, RootTask>();
-	private final Handler handler = new Handler();
+	private final Handler handler;
 	private final ExecutorService executorService;
 
 	/**
@@ -61,6 +61,7 @@ public abstract class ImageProcessor<E> {
 		this.context = context;
 		this.cache = cache;
 		this.executorService = executorService;
+		handler = new Handler(context.getMainLooper());
 	}
 
 	/**
